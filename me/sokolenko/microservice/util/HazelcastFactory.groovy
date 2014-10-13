@@ -6,6 +6,7 @@ import com.hazelcast.config.SerializerConfig
 import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.HazelcastInstance
 import com.hazelcast.nio.serialization.StreamSerializer
+import com.netflix.config.ConfigurationManager
 
 /**
  * @author Anatoliy Sokolenko
@@ -21,15 +22,31 @@ class HazelcastFactory {
         cfg.groupConfig.name = name
 //        cfg.setProperty('hazelcast.initial.min.cluster.size', '2')
 
-        def ip = InetAddress.getLocalHost().getHostAddress()
+        def hazelcastIf = ConfigurationManager.configInstance.getString('hazelcast.interface')
+        //need this, because multicast does not work through VM
+        def hazelcastIps = ConfigurationManager.configInstance.getString('hazelcast.ips')
+
+        String ip
+        if (hazelcastIf) {
+            ip = NetworkInterface.getNetworkInterfaces().findResult { NetworkInterface it ->
+                it.inetAddresses.findResult { InetAddress addr ->
+                    if (addr.hostAddress.startsWith(hazelcastIf)) {
+                        return addr.hostAddress
+                    }
+                }
+            }
+        } else {
+            ip = InetAddress.getLocalHost().hostAddress
+        }
 
         def netCfg = new NetworkConfig()
         netCfg.setPublicAddress(ip)
 
         netCfg.join.awsConfig.enabled = false
-        netCfg.join.tcpIpConfig.enabled = false
-        netCfg.join.multicastConfig.enabled = true
-        netCfg.join.multicastConfig.addTrustedInterface(ip)
+        netCfg.join.tcpIpConfig.enabled = true
+        netCfg.join.tcpIpConfig.addMember(hazelcastIps)
+        netCfg.join.multicastConfig.enabled = false
+//        netCfg.join.multicastConfig.addTrustedInterface(ip)
 
         cfg.setNetworkConfig(netCfg)
 

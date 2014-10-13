@@ -101,9 +101,10 @@ class NavigationV1Resource {
 
 }
 
+new ConfigurationStarter().start()
+
 def hazelcast = new HazelcastFactory('navigation')
 
-new ConfigurationStarter().start()
 new ServerStarter().start('navigation')
         .deployHybris()
         .deployApi(new NavigationV1Resource(hazelcast.getMultiMap('navigation-index')))

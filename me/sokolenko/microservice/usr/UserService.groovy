@@ -105,9 +105,10 @@ class UserV1Resource {
 
 }
 
+new ConfigurationStarter().start()
+
 def hazelcast = new HazelcastFactory('user', [(User.class): new UserSerializer()])
 
-new ConfigurationStarter().start()
 new ServerStarter().start('user')
         .deployHybris()
         .deployApi(new UserV1Resource(hazelcast.getMap('users')))

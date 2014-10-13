@@ -64,9 +64,10 @@ class ChallengeV1Resource {
 
 }
 
+new ConfigurationStarter().start()
+
 def hazelcast = new HazelcastFactory('challenge', [(Challenge.class): new ChallengeSerializer()])
 
-new ConfigurationStarter().start()
 new ServerStarter().start('challenge')
         .deployHybris()
         .deployApi(new ChallengeV1Resource(hazelcast.getMap('challenges')))
