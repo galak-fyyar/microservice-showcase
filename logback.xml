@@ -1,14 +1,46 @@
-<configuration debug="true">
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd"
+        debug="true">
 
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <!-- encoders are  by default assigned the type
-             ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    <appender name="common-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>common.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>common.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
         <encoder>
             <pattern>%d{yyyy-mm-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
+    <appender name="hazelcast-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>hazelcast.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>hazelcast.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-mm-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.netflix.config.source.ZooKeeperConfigurationSource" level="INFO">
+        <appender-ref ref="common-file"/>
+    </logger>
+
+    <logger name="com.hazelcast" level="INFO">
+        <appender-ref ref="hazelcast-file"/>
+    </logger>
+
     <root level="info">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="common-file" />
     </root>
 </configuration>

@@ -1,6 +1,7 @@
-package me.sokolenko.microservice
+package me.sokolenko.microservice.util
 
 import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet
+import com.netflix.hystrix.contrib.requestservlet.HystrixRequestContextServletFilter
 import com.sun.jersey.api.core.DefaultResourceConfig
 import com.sun.jersey.api.core.ResourceConfig
 import com.sun.jersey.api.json.JSONConfiguration
@@ -10,11 +11,16 @@ import io.undertow.servlet.api.DeploymentInfo
 import io.undertow.servlet.api.DeploymentManager
 import io.undertow.servlet.api.ServletContainer
 import io.undertow.servlet.util.ImmediateInstanceHandle
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
+import javax.servlet.DispatcherType
 import javax.servlet.ServletException
 
+import static com.netflix.config.ConfigurationManager.getConfigInstance
 import static io.undertow.servlet.Servlets.deployment
 import static io.undertow.servlet.Servlets.servlet
+import static io.undertow.servlet.Servlets.filter
 
 /**
  * Created by galak on 9/21/14.
@@ -24,15 +30,21 @@ import static io.undertow.servlet.Servlets.servlet
 @Grab(group = 'com.sun.jersey', module = 'jersey-json', version = '1.11')
 @Grab(group = 'io.undertow', module = 'undertow-core', version = '1.0.15.Final')
 @Grab(group = 'io.undertow', module = 'undertow-servlet', version = '1.0.15.Final')
-@Grab(group = 'com.netflix.hystrix', module = 'hystrix-core', version = '1.4.0-RC5')
-@Grab(group = 'com.netflix.hystrix', module = 'hystrix-metrics-event-stream', version = '1.4.0-RC5')
-public class UndertowJaxrsServer {
+@Grab(group = 'com.netflix.hystrix', module = 'hystrix-core', version = '1.3.18')
+@Grab(group = 'com.netflix.hystrix', module = 'hystrix-metrics-event-stream', version = '1.3.18')
+@Grab(group='com.netflix.hystrix', module='hystrix-request-servlet', version='1.3.18')
+public class ServerStarter {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServerStarter.class)
+
     final PathHandler root = new PathHandler();
     final ServletContainer container = ServletContainer.Factory.newInstance();
     protected Undertow server;
 
-    public UndertowJaxrsServer deployApi(Class<?>... resourceClasses) {
-        def config = new DefaultResourceConfig(resourceClasses)
+    public ServerStarter deployApi(Object... resources) {
+        def config = new DefaultResourceConfig()
+        config.singletons.addAll(resources)
+
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true)
         //workaround class loading bug, possibly related to Java 8
         config.getFeatures().put(ResourceConfig.FEATURE_DISABLE_WADL, true)
@@ -41,6 +53,10 @@ public class UndertowJaxrsServer {
                 .setContextPath('/api')
                 .setDeploymentName('rest')
                 .setClassLoader(this.class.classLoader)
+                .addFilters(filter('loggingFilter', ExceptionLoggingFilter.class))
+                .addFilterUrlMapping('loggingFilter', '/*', DispatcherType.REQUEST)
+                .addFilters(filter('hystrixContext', HystrixRequestContextServletFilter.class))
+                .addFilterUrlMapping('hystrixContext', '/*', DispatcherType.REQUEST)
                 .addServlet(
                 servlet('rest', com.sun.jersey.spi.container.servlet.ServletContainer.class, { ->
 
@@ -54,7 +70,7 @@ public class UndertowJaxrsServer {
         this
     }
 
-    public UndertowJaxrsServer deployHybris() {
+    public ServerStarter deployHybris() {
         deploy(deployment()
                 .setContextPath("/hystrixDashboard")
                 .setDeploymentName("hystrixDashboard")
@@ -69,7 +85,7 @@ public class UndertowJaxrsServer {
      * @param builder
      * @return
      */
-    private UndertowJaxrsServer deploy(DeploymentInfo builder) {
+    private ServerStarter deploy(DeploymentInfo builder) {
         DeploymentManager manager = container.addDeployment(builder);
         manager.deploy();
         try {
@@ -80,7 +96,37 @@ public class UndertowJaxrsServer {
         return this;
     }
 
-    public UndertowJaxrsServer start(int port, String host = '0.0.0.0') {
+    public ServerStarter start(String namespace) {
+        if (!namespace.endsWith('.')) {
+            namespace += '.'
+        }
+
+        def retry = 0
+        for (def port = getConfigInstance().getInt(namespace + 'start.port'); true; port++) {
+            try {
+                logger.info("Trying port $port")
+
+                def starter = start(port)
+                logger.info("Using port $port")
+                getConfigInstance().setProperty(namespace + 'port', port)
+
+                return starter
+            } catch (RuntimeException e) {
+                if (e.cause instanceof BindException) {
+                    logger.info("Port $port is already in use")
+                } else {
+                    throw e
+                }
+            }
+
+            retry++
+            if (retry > 9) {
+                throw new IllegalStateException('Could not bind not any port')
+            }
+        }
+    }
+
+    public ServerStarter start(int port, String host = '0.0.0.0') {
         Undertow.builder()
                 .setHandler(root)
                 .addHttpListener(port, host)
