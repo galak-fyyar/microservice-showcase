@@ -1,8 +1,8 @@
 package me.sokolenko.microservice.domain
 
+@groovy.lang.GrabConfig(systemClassLoader = true)
 @Grab(group = 'javax.ws.rs', module = 'jsr311-api', version = '1.1.1')
 @Grab(group = 'ch.qos.logback', module = 'logback-classic', version = '1.1.2')
-@Grab(group = 'com.netflix.eureka', module = 'eureka-client', version = '1.1.141')
 
 import me.sokolenko.microservice.domain.api.Challenge
 import me.sokolenko.microservice.nav.api.UpdateIndexCommand

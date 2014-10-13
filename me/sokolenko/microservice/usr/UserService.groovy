@@ -1,5 +1,10 @@
 package me.sokolenko.microservice.usr
 
+@groovy.lang.GrabConfig(systemClassLoader = true)
+@Grab(group = 'javax.ws.rs', module = 'jsr311-api', version = '1.1.1')
+@Grab(group = 'ch.qos.logback', module = 'logback-classic', version = '1.1.2')
+@Grab(group = 'com.netflix.archaius', module = 'archaius-core', version = '0.6.0')
+
 import com.netflix.config.DynamicIntProperty
 import com.netflix.config.DynamicPropertyFactory
 import me.sokolenko.microservice.usr.api.User

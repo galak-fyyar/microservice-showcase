@@ -11,6 +11,7 @@ import com.hazelcast.nio.serialization.StreamSerializer
  * @author Anatoliy Sokolenko
  */
 @Grab(group='com.hazelcast', module='hazelcast', version='3.3.1')
+@groovy.lang.GrabExclude(group = 'org.slf4j', module = 'slf4j-log4j12')
 class HazelcastFactory {
 
     def HazelcastInstance instance

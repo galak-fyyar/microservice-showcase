@@ -10,6 +10,7 @@ import org.apache.curator.retry.BoundedExponentialBackoffRetry
 /**
  * Created by galak on 9/29/14.
  */
+@GrabConfig(systemClassLoader = true)
 @Grab(group = 'com.netflix.archaius', module = 'archaius-zookeeper', version = '0.6.0')
 class ConfigurationStarter {
 
