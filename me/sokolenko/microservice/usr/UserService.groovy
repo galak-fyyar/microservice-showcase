@@ -31,6 +31,7 @@ import me.sokolenko.microservice.util.ConfigurationStarter
 import me.sokolenko.microservice.util.DiscoveryStarter
 import me.sokolenko.microservice.util.HazelcastStarter
 import me.sokolenko.microservice.util.ServerStarter
+import org.slf4j.LoggerFactory
 
 import javax.ws.rs.Consumes
 import javax.ws.rs.DefaultValue
@@ -53,6 +54,8 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND
 @Consumes('application/json')
 @Produces('application/json')
 class UserV1Resource {
+
+    private static final def logger = LoggerFactory.getLogger(UserV1Resource.class)
 
     final ConcurrentMap<UUID, User> storage
 
@@ -95,6 +98,8 @@ class UserV1Resource {
         }
 
         if (!result.isEmpty()) {
+            logger.info("getUser ${userUuidsString} respond")
+
             return result
         } else {
             return Response.status(NOT_FOUND).build()
