@@ -44,6 +44,6 @@ abstract class RestCommand<T> extends HystrixCommand<T> {
     }
 
     protected AsyncHttpClient getRestClient() {
-        ClientHolder.get(clientNamespace)
+        ClientHolder.getClient(clientNamespace)
     }
 }

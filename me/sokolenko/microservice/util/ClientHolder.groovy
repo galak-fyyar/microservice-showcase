@@ -12,7 +12,7 @@ class ClientHolder {
 
     static holder = new ConcurrentHashMap()
 
-    static get(String name) {
+    static getClient(String name) {
         if (holder.containsKey(name)) {
             return holder.get(name)
         } else {
