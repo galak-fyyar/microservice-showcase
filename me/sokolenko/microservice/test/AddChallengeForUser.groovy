@@ -21,8 +21,8 @@ while(true) {
     threshold.acquire()
 
     def challenge = new Challenge(text: 'У вас есть 24 часа чтобы повторить обливашки',
-            authorUuid: fromString('ad36cd47-5d35-4333-9f46-dfd74643c5c3'),
-            inviteeUuids: [fromString('08298232-7f23-4dc2-86af-a040aecf54c9')])
+            authorUuid: fromString('456511cd-1981-4103-957f-8fbd0bb72354'),
+            inviteeUuids: [fromString('b760fcb6-581c-4851-972f-9ce6bceb7ace')])
 
     challenge.uuid = new CreateChallengeCommand(challenge).execute()
 }
