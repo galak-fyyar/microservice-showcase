@@ -25,6 +25,7 @@ import static io.undertow.servlet.Servlets.filter
 /**
  * Created by galak on 9/21/14.
  */
+@GrabConfig(systemClassLoader = true)
 @Grab(group = 'com.sun.jersey', module = 'jersey-server', version = '1.11')
 @Grab(group = 'com.sun.jersey', module = 'jersey-servlet', version = '1.11')
 @Grab(group = 'com.sun.jersey', module = 'jersey-json', version = '1.11')

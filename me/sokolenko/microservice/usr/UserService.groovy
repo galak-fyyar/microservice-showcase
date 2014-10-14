@@ -1,6 +1,8 @@
 package me.sokolenko.microservice.usr
 
 @groovy.lang.GrabConfig(systemClassLoader = true)
+@Grab(group='com.hazelcast', module='hazelcast', version='3.3.1')
+@groovy.lang.GrabExclude(group = 'org.slf4j', module = 'slf4j-log4j12')
 @Grab(group = 'javax.ws.rs', module = 'jsr311-api', version = '1.1.1')
 @Grab(group = 'ch.qos.logback', module = 'logback-classic', version = '1.1.2')
 @Grab(group = 'com.netflix.archaius', module = 'archaius-core', version = '0.6.0')

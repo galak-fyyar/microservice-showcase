@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Created by galak on 9/29/14.
  */
+@GrabConfig(systemClassLoader = true)
 @Grab(group='com.netflix.ribbon', module='ribbon-httpasyncclient', version='0.3.13')
 class ClientHolder {
 
