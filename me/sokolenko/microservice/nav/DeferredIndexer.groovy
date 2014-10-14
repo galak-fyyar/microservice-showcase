@@ -25,7 +25,7 @@ class DeferredIndexer extends Thread {
                 new IndexUsersCommand(index, deferred, userUuids, challengeUuid).execute()
             }
 
-            sleep(60 * 1000L)
+            sleep(10 * 1000L)
         }
     }
 }
