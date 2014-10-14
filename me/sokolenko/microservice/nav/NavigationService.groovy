@@ -10,8 +10,6 @@ package me.sokolenko.microservice.nav
 import com.netflix.config.DynamicIntProperty
 import com.netflix.config.DynamicPropertyFactory
 import me.sokolenko.microservice.domain.api.Challenge
-import me.sokolenko.microservice.usr.api.GetUserCommand
-import me.sokolenko.microservice.usr.api.User
 import me.sokolenko.microservice.util.ConfigurationStarter
 import me.sokolenko.microservice.util.DiscoveryStarter
 import me.sokolenko.microservice.util.HazelcastFactory
@@ -33,10 +31,13 @@ class NavigationV1Resource {
 
     final MultiMap<String, UUID> index
 
+    final Queue deferred
+
     final DynamicIntProperty defaultLimit = DynamicPropertyFactory.instance.getIntProperty('navigation.api.limit.default', 10)
 
-    NavigationV1Resource(MultiMap<String, UUID> index) {
+    NavigationV1Resource(MultiMap<String, UUID> index, Queue deferred) {
         this.index = index
+        this.deferred = deferred
     }
 
     @GET
@@ -55,12 +56,12 @@ class NavigationV1Resource {
         if (query) {
             terms = query.split(/\s/)
         } else {
-            terms = index.keySet()
+            terms = this.index.keySet()
         }
 
         for (def term : terms) {
             if (pos >= offset) {
-                def uuids = index.get(term)
+                def uuids = this.index.get(term)
 
                 if (uuids.size() > limit) {
                     uuids = new ArrayList<UUID>(uuids).subList(0, limit)
@@ -84,17 +85,14 @@ class NavigationV1Resource {
     @PUT
     def index(Challenge challenge) {
         challenge.text.split(/\s/).each { String term ->
-            index.put(term, challenge.uuid)
+            this.index.put(term, challenge.uuid)
         }
 
         def userUuids = new HashSet()
         userUuids.add(challenge.authorUuid)
         userUuids.addAll(challenge.inviteeUuids)
 
-        List<User> users = new GetUserCommand(userUuids).execute()
-        for (User user : users) {
-            index.put(user.email, challenge.uuid)
-        }
+        new IndexUsersCommand(index, deferred, userUuids, challenge.uuid).execute()
 
         Response.ok().build()
     }
@@ -104,6 +102,10 @@ class NavigationV1Resource {
 new ConfigurationStarter().start()
 
 def hazelcast = new HazelcastFactory('navigation')
+def index = hazelcast.getMultiMap('navigation-index')
+def deferred = hazelcast.getQueue('navigation-indexing-deferred')
+
+new DeferredIndexer(index, deferred).start()
 
 new ServerStarter().start('navigation')
         .deployHystrix()

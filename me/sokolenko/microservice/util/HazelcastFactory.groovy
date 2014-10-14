@@ -68,4 +68,8 @@ class HazelcastFactory {
         instance.getMultiMap(name)
     }
 
+    def getQueue(String name) {
+        instance.getQueue(name)
+    }
+
 }
