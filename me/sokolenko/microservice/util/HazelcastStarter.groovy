@@ -1,23 +1,28 @@
 package me.sokolenko.microservice.util
 
 import com.hazelcast.config.Config
+import com.hazelcast.config.MapConfig
+import com.hazelcast.config.MapStoreConfig
 import com.hazelcast.config.NetworkConfig
 import com.hazelcast.config.SerializerConfig
 import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.HazelcastInstance
+import com.hazelcast.core.MapStore
 import com.hazelcast.nio.serialization.StreamSerializer
 import com.netflix.config.ConfigurationManager
 
 /**
  * @author Anatoliy Sokolenko
  */
-class HazelcastFactory {
+class HazelcastStarter {
 
     def HazelcastInstance instance
+    def Config cfg
 
-    HazelcastFactory(String name, Map<Class, StreamSerializer> serializers = [:]) {
-        Config cfg = new Config()
+    HazelcastStarter(String name) {
+        cfg = new Config()
         cfg.groupConfig.name = name
+        cfg.mapConfigs.put('')
 //        cfg.setProperty('hazelcast.initial.min.cluster.size', '2')
 
         def hazelcastIf = ConfigurationManager.configInstance.getString('hazelcast.interface')
@@ -47,27 +52,31 @@ class HazelcastFactory {
 //        netCfg.join.multicastConfig.addTrustedInterface(ip)
 
         cfg.setNetworkConfig(netCfg)
+    }
 
-        serializers.each { clazz, serializer ->
-            cfg.serializationConfig.addSerializerConfig(new SerializerConfig()
-                    .setImplementation(serializer)
-                    .setTypeClass(clazz)
-            )
-        }
+    def addSerializer(Class entityClazz, StreamSerializer serializer) {
+        cfg.serializationConfig.addSerializerConfig(new SerializerConfig()
+                .setImplementation(serializer)
+                .setTypeClass(entityClazz)
+        )
 
+        return this
+    }
+
+    def addMap(String map, Class<? extends MapStore> storeClazz) {
+        def config = new MapConfig()
+        config.mapStoreConfig = new MapStoreConfig()
+        config.mapStoreConfig.className = storeClazz.name
+
+        cfg.mapConfigs.put(map, config)
+
+        return this
+    }
+
+    def start() {
         this.instance = Hazelcast.newHazelcastInstance(cfg)
-    }
 
-    def getMap(String name) {
-        instance.getMap(name)
-    }
-
-    def getMultiMap(String name) {
-        instance.getMultiMap(name)
-    }
-
-    def getQueue(String name) {
-        instance.getQueue(name)
+        return instance
     }
 
 }

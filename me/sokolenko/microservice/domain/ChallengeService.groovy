@@ -27,7 +27,7 @@ import me.sokolenko.microservice.domain.api.Challenge
 import me.sokolenko.microservice.nav.api.UpdateIndexCommand
 import me.sokolenko.microservice.util.ConfigurationStarter
 import me.sokolenko.microservice.util.DiscoveryStarter
-import me.sokolenko.microservice.util.HazelcastFactory
+import me.sokolenko.microservice.util.HazelcastStarter
 import me.sokolenko.microservice.util.ServerStarter
 
 import javax.ws.rs.*
@@ -85,7 +85,9 @@ class ChallengeV1Resource {
 
 new ConfigurationStarter().start()
 
-def hazelcast = new HazelcastFactory('challenge', [(Challenge.class): new ChallengeSerializer()])
+def hazelcast = new HazelcastStarter('challenge')
+    .addSerializer(Challenge.class, new ChallengeSerializer())
+    .start()
 
 new ServerStarter().start('challenge')
         .deployHystrix()

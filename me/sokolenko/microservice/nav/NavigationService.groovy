@@ -28,7 +28,7 @@ import com.netflix.config.DynamicPropertyFactory
 import me.sokolenko.microservice.domain.api.Challenge
 import me.sokolenko.microservice.util.ConfigurationStarter
 import me.sokolenko.microservice.util.DiscoveryStarter
-import me.sokolenko.microservice.util.HazelcastFactory
+import me.sokolenko.microservice.util.HazelcastStarter
 import me.sokolenko.microservice.util.ServerStarter
 
 import javax.ws.rs.*
@@ -117,7 +117,8 @@ class NavigationV1Resource {
 
 new ConfigurationStarter().start()
 
-def hazelcast = new HazelcastFactory('navigation')
+def hazelcast = new HazelcastStarter('navigation')
+    .start()
 def index = hazelcast.getMultiMap('navigation-index')
 def deferred = hazelcast.getQueue('navigation-indexing-deferred')
 

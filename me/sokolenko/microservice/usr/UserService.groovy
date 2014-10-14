@@ -22,13 +22,14 @@ package me.sokolenko.microservice.usr
 @Grab(group = 'com.netflix.hystrix', module='hystrix-request-servlet', version='1.3.18')
 @Grab(group = 'com.netflix.eureka', module = 'eureka-client', version = '1.1.141')
 @Grab(group='com.google.guava', module='guava', version='18.0')
+@Grab(group='hsqldb', module='hsqldb', version='1.8.0.10')
 
 import com.netflix.config.DynamicIntProperty
 import com.netflix.config.DynamicPropertyFactory
 import me.sokolenko.microservice.usr.api.User
 import me.sokolenko.microservice.util.ConfigurationStarter
 import me.sokolenko.microservice.util.DiscoveryStarter
-import me.sokolenko.microservice.util.HazelcastFactory
+import me.sokolenko.microservice.util.HazelcastStarter
 import me.sokolenko.microservice.util.ServerStarter
 
 import javax.ws.rs.Consumes
@@ -125,7 +126,10 @@ class UserV1Resource {
 
 new ConfigurationStarter().start()
 
-def hazelcast = new HazelcastFactory('user-server', [(User.class): new UserSerializer()])
+def hazelcast = new HazelcastStarter('user-server')
+    .addSerializer(User.class, new UserSerializer())
+    .addMap('users', UserOnDiskStore.class)
+    .start()
 
 new ServerStarter().start('user-server')
         .deployHystrix()
