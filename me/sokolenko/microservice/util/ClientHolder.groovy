@@ -5,10 +5,8 @@ import com.netflix.client.http.AsyncHttpClientBuilder
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Created by galak on 9/29/14.
+ * @author Anatoliy Sokolenko
  */
-@GrabConfig(systemClassLoader = true)
-@Grab(group='com.netflix.ribbon', module='ribbon-httpasyncclient', version='0.3.13')
 class ClientHolder {
 
     static holder = new ConcurrentHashMap()

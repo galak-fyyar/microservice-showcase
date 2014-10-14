@@ -25,15 +25,6 @@ import static io.undertow.servlet.Servlets.filter
 /**
  * Created by galak on 9/21/14.
  */
-@GrabConfig(systemClassLoader = true)
-@Grab(group = 'com.sun.jersey', module = 'jersey-server', version = '1.11')
-@Grab(group = 'com.sun.jersey', module = 'jersey-servlet', version = '1.11')
-@Grab(group = 'com.sun.jersey', module = 'jersey-json', version = '1.11')
-@Grab(group = 'io.undertow', module = 'undertow-core', version = '1.0.15.Final')
-@Grab(group = 'io.undertow', module = 'undertow-servlet', version = '1.0.15.Final')
-@Grab(group = 'com.netflix.hystrix', module = 'hystrix-core', version = '1.3.18')
-@Grab(group = 'com.netflix.hystrix', module = 'hystrix-metrics-event-stream', version = '1.3.18')
-@Grab(group='com.netflix.hystrix', module='hystrix-request-servlet', version='1.3.18')
 public class ServerStarter {
 
     private static final Logger logger = LoggerFactory.getLogger(ServerStarter.class)

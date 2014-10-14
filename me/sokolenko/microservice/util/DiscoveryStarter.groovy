@@ -9,8 +9,6 @@ import com.netflix.discovery.DiscoveryManager
 /**
  * @author Anatoliy Sokolenko
  */
-@GrabConfig(systemClassLoader = true)
-@Grab(group = 'com.netflix.eureka', module = 'eureka-client', version = '1.1.141')
 class DiscoveryStarter {
 
     def start(String namespace) {

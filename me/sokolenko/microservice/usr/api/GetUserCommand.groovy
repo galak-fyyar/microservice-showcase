@@ -11,7 +11,6 @@ import static com.netflix.hystrix.HystrixCommandGroupKey.Factory.asKey
 /**
  * @author Anatoliy Sokolenko
  */
-@Grab(group='com.google.guava', module='guava', version='18.0')
 class GetUserCommand extends RestCommand<List<User>> {
 
     final Set<UUID> userUuids

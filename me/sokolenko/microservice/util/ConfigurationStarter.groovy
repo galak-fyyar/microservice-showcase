@@ -8,10 +8,8 @@ import org.apache.curator.framework.CuratorFrameworkFactory
 import org.apache.curator.retry.BoundedExponentialBackoffRetry
 
 /**
- * Created by galak on 9/29/14.
+ * @author Anatoliy Sokolenko
  */
-@GrabConfig(systemClassLoader = true)
-@Grab(group = 'com.netflix.archaius', module = 'archaius-zookeeper', version = '0.6.0')
 class ConfigurationStarter {
 
     def start(String configFilename = 'settings') {

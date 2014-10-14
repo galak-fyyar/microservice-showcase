@@ -10,8 +10,6 @@ import com.netflix.hystrix.HystrixCommand.Setter
 /**
  * Created by galak on 9/30/14.
  */
-@Grab(group = 'com.netflix.hystrix', module = 'hystrix-core', version = '1.3.18')
-@Grab(group='com.google.guava', module='guava', version='18.0')
 abstract class RestCommand<T> extends HystrixCommand<T> {
 
     final String clientNamespace
