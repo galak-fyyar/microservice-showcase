@@ -70,7 +70,7 @@ public class ServerStarter {
         this
     }
 
-    public ServerStarter deployHybris() {
+    public ServerStarter deployHystrix() {
         deploy(deployment()
                 .setContextPath("/hystrixDashboard")
                 .setDeploymentName("hystrixDashboard")

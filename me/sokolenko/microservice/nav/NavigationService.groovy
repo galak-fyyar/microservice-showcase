@@ -106,7 +106,7 @@ new ConfigurationStarter().start()
 def hazelcast = new HazelcastFactory('navigation')
 
 new ServerStarter().start('navigation')
-        .deployHybris()
-        .deployApi(new NavigationV1Resource(hazelcast.getMultiMap('navigation-index')))
+        .deployHystrix()
+        .deployApi(new NavigationV1Resource(index, deferred))
 
 new DiscoveryStarter().start('navigation')

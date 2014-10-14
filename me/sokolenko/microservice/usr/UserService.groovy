@@ -110,7 +110,7 @@ new ConfigurationStarter().start()
 def hazelcast = new HazelcastFactory('user', [(User.class): new UserSerializer()])
 
 new ServerStarter().start('user')
-        .deployHybris()
+        .deployHystrix()
         .deployApi(new UserV1Resource(hazelcast.getMap('users')))
 
 new DiscoveryStarter().start('user')

@@ -69,7 +69,7 @@ new ConfigurationStarter().start()
 def hazelcast = new HazelcastFactory('challenge', [(Challenge.class): new ChallengeSerializer()])
 
 new ServerStarter().start('challenge')
-        .deployHybris()
+        .deployHystrix()
         .deployApi(new ChallengeV1Resource(hazelcast.getMap('challenges')))
 
 new DiscoveryStarter().start('challenge')
