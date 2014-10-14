@@ -22,7 +22,7 @@ package me.sokolenko.microservice.usr
 @Grab(group = 'com.netflix.hystrix', module='hystrix-request-servlet', version='1.3.18')
 @Grab(group = 'com.netflix.eureka', module = 'eureka-client', version = '1.1.141')
 @Grab(group='com.google.guava', module='guava', version='18.0')
-@Grab(group='hsqldb', module='hsqldb', version='1.8.0.10')
+@Grab(group='org.hsqldb', module='hsqldb', version='2.3.2')
 
 import com.netflix.config.DynamicIntProperty
 import com.netflix.config.DynamicPropertyFactory

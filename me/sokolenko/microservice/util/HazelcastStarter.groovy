@@ -22,7 +22,6 @@ class HazelcastStarter {
     HazelcastStarter(String name) {
         cfg = new Config()
         cfg.groupConfig.name = name
-        cfg.mapConfigs.put('')
 //        cfg.setProperty('hazelcast.initial.min.cluster.size', '2')
 
         def hazelcastIf = ConfigurationManager.configInstance.getString('hazelcast.interface')

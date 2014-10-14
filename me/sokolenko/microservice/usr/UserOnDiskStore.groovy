@@ -15,19 +15,21 @@ class UserOnDiskStore extends MapStoreAdapter<UUID, User> {
     private Connection cxn;
 
     UserOnDiskStore() {
+        Class.forName('org.hsqldb.jdbc.JDBCDriver')
+
         cxn = DriverManager.getConnection("jdbc:hsqldb:/tmp/microservice", "SA", "");
         cxn.createStatement().executeUpdate("create table if not exists users (uuid char(36), email varchar(1024))");
     }
 
     @Override
     void delete(UUID key) {
-        cxn.createStatement().execute("delete from users where uuid=${key.toString()}")
+        cxn.createStatement().execute("delete from users where uuid='${key.toString()}'")
     }
 
     @Override
     void store(UUID key, User value) {
         cxn.createStatement().execute("""
-            merge into users using ((values(${key.toString()}, ${value.email})))
+            merge into users using ((values('${key.toString()}', '${value.email}')))
             as vals(uuid, email) on users.uuid = vals.uuid
             when MATCHED THEN UPDATE SET users.email = vals.email
             WHEN NOT MATCHED THEN INSERT VALUES vals.uuid, vals.email
@@ -36,7 +38,7 @@ class UserOnDiskStore extends MapStoreAdapter<UUID, User> {
 
     @Override
     User load(UUID key) {
-        ResultSet rs = cxn.createStatement().executeQuery("select email from users where uuid=${key}")
+        ResultSet rs = cxn.createStatement().executeQuery("select email from users where uuid='${key}'")
 
         if (rs.next()) {
             return new User(uuid: key, email: rs.getString('email'))
