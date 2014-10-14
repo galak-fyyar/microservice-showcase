@@ -63,24 +63,18 @@ class UserV1Resource {
     }
 
     @GET
-    def list(@QueryParam('limit') @DefaultValue('-1') int limit,
-             @QueryParam('offset') @DefaultValue('0') int offset) {
+    def list(@QueryParam('limit') @DefaultValue('-1') int limit) {
 
         if (limit == -1) {
             limit = defaultLimit.get()
         }
 
         def result = []
-        def pos = 0
 
         def ix = storage.iterator()
         while (result.size() < limit && ix.hasNext()) {
-            if (pos >= offset) {
-                def user = ix.next().value
-                result.add(user)
-            }
-
-            pos++
+            def user = ix.next().value
+            result.add(user)
         }
 
         return result

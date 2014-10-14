@@ -58,15 +58,13 @@ class NavigationV1Resource {
 
     @GET
     def get(@QueryParam('q') String query,
-            @QueryParam('limit') @DefaultValue('-1') int limit,
-            @QueryParam('offset') @DefaultValue('0') int offset) {
+            @QueryParam('limit') @DefaultValue('-1') int limit) {
 
         if (limit == -1) {
             limit = defaultLimit.get()
         }
 
         def result = new LinkedHashSet()
-        def pos = 0
 
         def terms
         if (query) {
@@ -76,23 +74,18 @@ class NavigationV1Resource {
         }
 
         for (def term : terms) {
-            if (pos >= offset) {
-                def uuids = this.index.get(term)
+            def uuids = this.index.get(term)
+            if (uuids.size() > limit - result.size()) {
+                uuids = new ArrayList<UUID>(uuids).subList(0, limit - result.size())
+            }
 
-                if (uuids.size() > limit - result.size()) {
-                    uuids = new ArrayList<UUID>(uuids).subList(0, limit - result.size())
-                }
-
-                if (uuids) {
-                    result.addAll(uuids)
-                }
+            if (uuids) {
+                result.addAll(uuids)
             }
 
             if (result.size() == limit) {
                 break
             }
-
-            pos++
         }
 
         result
