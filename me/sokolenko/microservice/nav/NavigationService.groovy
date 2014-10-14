@@ -65,7 +65,7 @@ class NavigationV1Resource {
             limit = defaultLimit.get()
         }
 
-        def result = []
+        def result = new LinkedHashSet()
         def pos = 0
 
         def terms
@@ -79,8 +79,8 @@ class NavigationV1Resource {
             if (pos >= offset) {
                 def uuids = this.index.get(term)
 
-                if (uuids.size() > limit) {
-                    uuids = new ArrayList<UUID>(uuids).subList(0, limit)
+                if (uuids.size() > limit - result.size()) {
+                    uuids = new ArrayList<UUID>(uuids).subList(0, limit - result.size())
                 }
 
                 if (uuids) {
