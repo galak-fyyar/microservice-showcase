@@ -16,11 +16,14 @@ class ChallengeSerializer implements StreamSerializer<Challenge> {
         output.writeUTF(challenge.text)
         output.writeLong(challenge.authorUuid.getMostSignificantBits())
         output.writeLong(challenge.authorUuid.getLeastSignificantBits())
-        for (UUID inviteeUuid : challenge.inviteeUuids) {
-            output.writeBoolean(true)
 
-            output.writeLong(inviteeUuid.getMostSignificantBits())
-            output.writeLong(inviteeUuid.getLeastSignificantBits())
+        if (challenge.inviteeUuids) {
+            for (UUID inviteeUuid : challenge.inviteeUuids) {
+                output.writeBoolean(true)
+
+                output.writeLong(inviteeUuid.getMostSignificantBits())
+                output.writeLong(inviteeUuid.getLeastSignificantBits())
+            }
         }
 
         output.writeBoolean(false)
@@ -33,9 +36,13 @@ class ChallengeSerializer implements StreamSerializer<Challenge> {
         challenge.uuid = new UUID(input.readLong(), input.readLong())
         challenge.text = input.readUTF()
         challenge.authorUuid = new UUID(input.readLong(), input.readLong())
+
+        challenge.inviteeUuids = new HashSet<>()
         while (input.readBoolean()) {
             challenge.inviteeUuids.add(new UUID(input.readLong(), input.readLong()))
         }
+
+        return challenge
     }
 
     @Override
