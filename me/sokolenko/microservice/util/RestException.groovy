@@ -3,7 +3,7 @@ package me.sokolenko.microservice.util
 import com.netflix.client.http.HttpResponse
 
 /**
- * Created by galak on 10/13/14.
+ * @author Anatoliy Sokolenko
  */
 class RestException extends RuntimeException {
 

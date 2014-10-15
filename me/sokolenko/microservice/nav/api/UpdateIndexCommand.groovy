@@ -10,7 +10,7 @@ import static com.netflix.hystrix.HystrixCommand.Setter.withGroupKey
 import static com.netflix.hystrix.HystrixCommandGroupKey.Factory.asKey
 
 /**
- * Created by galak on 9/30/14.
+ * @author Anatoliy Sokolenko
  */
 class UpdateIndexCommand extends RestCommand {
 

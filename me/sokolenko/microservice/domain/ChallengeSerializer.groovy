@@ -6,7 +6,7 @@ import com.hazelcast.nio.serialization.StreamSerializer
 import me.sokolenko.microservice.domain.api.Challenge
 
 /**
- * Created by galak on 10/13/14.
+ * @author Anatoliy Sokolenko
  */
 class ChallengeSerializer implements StreamSerializer<Challenge> {
     @Override

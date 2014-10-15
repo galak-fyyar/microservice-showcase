@@ -6,7 +6,7 @@ import com.hazelcast.nio.serialization.StreamSerializer
 import me.sokolenko.microservice.usr.api.User
 
 /**
- * Created by galak on 10/13/14.
+ * @author Anatoliy Sokolenko
  */
 class UserSerializer implements StreamSerializer<User> {
 

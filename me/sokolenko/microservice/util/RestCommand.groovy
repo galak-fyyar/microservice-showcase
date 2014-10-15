@@ -8,7 +8,7 @@ import com.netflix.hystrix.HystrixCommand
 import com.netflix.hystrix.HystrixCommand.Setter
 
 /**
- * Created by galak on 9/30/14.
+ * @author Anatoliy Sokolenko
  */
 abstract class RestCommand<T> extends HystrixCommand<T> {
 

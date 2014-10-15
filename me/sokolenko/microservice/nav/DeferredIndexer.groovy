@@ -3,7 +3,7 @@ package me.sokolenko.microservice.nav
 import com.hazelcast.core.MultiMap
 
 /**
- * Created by galak on 10/13/14.
+ * @author Anatoliy Sokolenko
  */
 class DeferredIndexer extends Thread {
 

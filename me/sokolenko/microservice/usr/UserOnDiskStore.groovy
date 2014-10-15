@@ -8,7 +8,7 @@ import java.sql.DriverManager
 import java.sql.ResultSet
 
 /**
- * Created by galak on 10/14/14.
+ * @author Anatoliy Sokolenko
  */
 class UserOnDiskStore extends MapStoreAdapter<UUID, User> {
 

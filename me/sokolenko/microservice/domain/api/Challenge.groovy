@@ -3,7 +3,7 @@ package me.sokolenko.microservice.domain.api
 import groovy.transform.ToString
 
 /**
- * Created by galak on 9/30/14.
+ * @author Anatoliy Sokolenko
  */
 @ToString
 class Challenge {

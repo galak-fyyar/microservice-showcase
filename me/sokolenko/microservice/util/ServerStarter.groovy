@@ -23,7 +23,7 @@ import static io.undertow.servlet.Servlets.servlet
 import static io.undertow.servlet.Servlets.filter
 
 /**
- * Created by galak on 9/21/14.
+ * @author Anatoliy Sokolenko
  */
 public class ServerStarter {
 

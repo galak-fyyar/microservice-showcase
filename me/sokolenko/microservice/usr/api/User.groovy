@@ -3,7 +3,7 @@ package me.sokolenko.microservice.usr.api
 import groovy.transform.ToString
 
 /**
- * Created by galak on 10/12/14.
+ * @author Anatoliy Sokolenko
  */
 @ToString
 class User {
