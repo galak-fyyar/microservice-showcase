@@ -36,6 +36,7 @@ public class ServerStarter {
     public ServerStarter deployApi(Object... resources) {
         def config = new DefaultResourceConfig()
         config.singletons.addAll(resources)
+        config.singletons.add(new ObjectMapperProvider())
 
         config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, true)
         //workaround class loading bug, possibly related to Java 8
