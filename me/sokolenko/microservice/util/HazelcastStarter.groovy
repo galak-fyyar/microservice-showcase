@@ -22,7 +22,6 @@ class HazelcastStarter {
     HazelcastStarter(String name) {
         cfg = new Config()
         cfg.groupConfig.name = name
-//        cfg.setProperty('hazelcast.initial.min.cluster.size', '2')
 
         def hazelcastIf = ConfigurationManager.configInstance.getString('hazelcast.interface')
         //need this, because multicast does not work through VM
@@ -48,7 +47,6 @@ class HazelcastStarter {
         netCfg.join.tcpIpConfig.enabled = true
         netCfg.join.tcpIpConfig.addMember(hazelcastIps)
         netCfg.join.multicastConfig.enabled = false
-//        netCfg.join.multicastConfig.addTrustedInterface(ip)
 
         cfg.setNetworkConfig(netCfg)
     }
