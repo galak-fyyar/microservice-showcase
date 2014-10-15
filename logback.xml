@@ -1,0 +1,36 @@
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/enricopulatzo/logback-XSD/master/src/main/xsd/logback.xsd">
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-mm-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="hazelcast-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/hazelcast.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/hazelcast.${PID}.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%d{yyyy-mm-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.netflix.config.source.ZooKeeperConfigurationSource" level="INFO">
+        <appender-ref ref="stdout"/>
+    </logger>
+
+    <logger name="com.hazelcast" level="INFO">
+        <appender-ref ref="hazelcast-file"/>
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="stdout" />
+    </root>
+</configuration>
