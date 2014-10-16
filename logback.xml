@@ -30,6 +30,11 @@
         <appender-ref ref="hazelcast-file"/>
     </logger>
 
+    <!-- Print retries -->
+    <logger name="com.netflix.client.AsyncLoadBalancingClient" level="DEBUG">
+        <appender-ref ref="stdout"/>
+    </logger>
+
     <root level="info">
         <appender-ref ref="stdout" />
     </root>
