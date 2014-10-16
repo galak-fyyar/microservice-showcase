@@ -31,6 +31,8 @@ abstract class RestCommand<T> extends HystrixCommand<T> {
             .header('content-type', 'application/json')
             .header('accept', 'application/json')
 
+        requestBuilder.retriable = true
+
         def future = restClient.execute(requestBuilder.build())
         HttpResponse resp = future.get()
 
