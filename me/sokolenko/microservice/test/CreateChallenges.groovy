@@ -1,5 +1,6 @@
 package me.sokolenko.microservice.test
 
+import com.google.common.util.concurrent.RateLimiter
 import me.sokolenko.microservice.domain.api.Challenge
 import me.sokolenko.microservice.domain.api.CreateChallengeCommand
 import me.sokolenko.microservice.usr.api.CreateUserCommand
@@ -16,8 +17,9 @@ new ConfigurationStarter().start()
 new DiscoveryStarter().start('web-test')
 
 def texts = [
-        'У вас есть 24 часа чтобы повторить обливашки',
-        'Ice Bucket',
+        'You have 24 hours to repeat dousing #IceBucketChallenge',
+        'I\'m going to perform #IceBucketChallenge with bucket of Coca-Cola. You have 24 hours to repeat',
+        '#Sandbucket challenge -- you have 24 hours to build a sand castle.'
 ]
 
 def users = [
@@ -48,7 +50,13 @@ def textId = rnd.ints(0, texts.size()).iterator()
 def userId = rnd.ints(0, users.size()).iterator()
 def inviteesNum = rnd.ints(1, 5).iterator()
 
-for (int i = 0; i < 100; i++) {
+def threshold = RateLimiter.create(50)
+
+int i = 0
+int total = args.size() > 0 ? (args[0] as int) : 100
+for (; i < total; i++) {
+    threshold.acquire()
+
     def inviteeCount = inviteesNum.nextInt()
     def inviteeUuids = new HashSet(inviteeCount)
     for (int j = 0; j < inviteeCount; j++) {
@@ -61,5 +69,7 @@ for (int i = 0; i < 100; i++) {
     )
 
     challenge.uuid = new CreateChallengeCommand(challenge).execute()
-    println(challenge)
 }
+
+println "$i challenges created"
+
